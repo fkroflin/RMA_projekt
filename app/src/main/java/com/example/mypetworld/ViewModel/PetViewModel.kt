@@ -22,41 +22,41 @@ class PetViewModel : ViewModel() {
             Log.e("MyViewModel", "Initialization failed", e)
         }
     }
-//    private fun fetchPets() {
-//        viewModelScope.launch {
-//            try {
-//                val snapshot = db.collection("Pets").get().await()
-//                val petList = snapshot.documents.mapNotNull { doc ->
-//                    doc.toObject(Pet::class.java)?.apply {
-//                        id = doc.id
-//                    }
-//                }
-//                _pets.value = petList
-//            } catch (e: Exception) {
-//            }
-//        }
-//    }
-
     private fun fetchPets() {
         viewModelScope.launch {
             try {
                 val snapshot = db.collection("Pets").get().await()
                 val petList = snapshot.documents.mapNotNull { doc ->
-                    doc.toObject(Pet::class.java)?.let { pet ->
-                        Log.d("PetViewModel", "Fetched pet: ${pet.name}, ${pet.type}, hp: ${pet.hp}")
-                        pet.copy(
-                            id = doc.id,
-                            name = pet.name.lowercase(),
-                            type = pet.type.lowercase()
-                        )
+                    doc.toObject(Pet::class.java)?.apply {
+                        id = doc.id
                     }
                 }
                 _pets.value = petList
             } catch (e: Exception) {
-                Log.e("PetViewModel", "Failed to fetch pets", e)
             }
         }
     }
+
+//    private fun fetchPets() {
+//        viewModelScope.launch {
+//            try {
+//                val snapshot = db.collection("Pets").get().await()
+//                val petList = snapshot.documents.mapNotNull { doc ->
+//                    doc.toObject(Pet::class.java)?.let { pet ->
+//                        Log.d("PetViewModel", "Fetched pet: ${pet.name}, ${pet.type}, hp: ${pet.hp}")
+//                        pet.copy(
+//                            id = doc.id,
+//                            name = pet.name.lowercase(),
+//                            type = pet.type.lowercase()
+//                        )
+//                    }
+//                }
+//                _pets.value = petList
+//            } catch (e: Exception) {
+//                Log.e("PetViewModel", "Failed to fetch pets", e)
+//            }
+//        }
+//    }
 
 
 //    private fun fetchPets() {
