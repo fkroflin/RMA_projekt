@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "115383832728",
+    "project_id": "my-pet-world-cd29a",
+    "storage_bucket": "my-pet-world-cd29a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:115383832728:android:1806ad497832b692b8c0ed",
+        "android_client_info": {
+          "package_name": "com.example.mypetworld"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAzb2peuh00Ajcca8lZMC6omDiUX4Y72KQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
