@@ -2,10 +2,14 @@ package com.example.mypetworld.Model
 
 data class Pet (
     var id: String = "",
-    val HP: Int = 100,
-    val Hunger: Int = 100,
-    val Happiness: Int = 100,
-    val Energy: Int = 100,
-    val Type: String = "",
-    val Name: String = ""
+    var hp: Int = 100,
+    var hunger: Int = 100,
+    var happiness: Int = 100,
+    var energy: Int = 100,
+    val type: String = "",
+    val name: String = "",
+    val toy: String = "",
+    var lastUpdated: Long = System.currentTimeMillis(),
+    var variant: Int = 1,
+    var userId: String = ""
 )
