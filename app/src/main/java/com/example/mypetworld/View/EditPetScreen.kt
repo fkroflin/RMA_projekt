@@ -20,8 +20,8 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
@@ -35,6 +35,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -44,7 +45,10 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.mypetworld.Model.PetType
+import com.example.mypetworld.R
 import com.example.mypetworld.ViewModel.PetViewModel
+import com.example.mypetworld.ui.theme.ChewyFont
+import com.example.mypetworld.ui.theme.ComicNeueFont
 
 @Composable
 fun EditPetScreen(
@@ -61,15 +65,20 @@ fun EditPetScreen(
     }
 
     var petName by remember { mutableStateOf(petToEdit.name) }
-    var petVariant by remember { mutableStateOf(petToEdit.variant ?: 1) }
+    var petVariant by remember { mutableStateOf(petToEdit.variant) }
     val context = LocalContext.current
     val petType = PetType.values().find { it.displayName == petToEdit.type } ?: PetType.dog
 
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFFFFE5D9))
+        modifier = Modifier.fillMaxSize()
     ) {
+        Image(
+            painter = painterResource(id = R.drawable.background),
+            contentDescription = "Background",
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
+        )
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -101,7 +110,8 @@ fun EditPetScreen(
                         text = "EDIT PET",
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color.Black
+                        color = Color.Black,
+                        fontFamily = ChewyFont
                     )
                 }
             }
@@ -123,7 +133,7 @@ fun EditPetScreen(
                     painter = painterResource(id = petViewModel.getPetIconRes(petType.displayName, petVariant)),
                     contentDescription = "${petType.displayName} icon",
                     modifier = Modifier
-                        .size(170.dp)
+                        .size(180.dp)
                         .padding(16.dp)
                 )
 
@@ -146,32 +156,35 @@ fun EditPetScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            Box(
+            Button(
+                onClick = {
+                    if (petName.isNotBlank()) {
+                        val updatedPet = petToEdit.copy(
+                            name = petName,
+                            variant = petVariant
+                        )
+
+                        petViewModel.updatePet(updatedPet)
+                        Toast.makeText(context, "${petName}'s details updated!", Toast.LENGTH_SHORT).show()
+                        navController.popBackStack()
+                    } else {
+                        Toast.makeText(context, "Pet name can't be empty!", Toast.LENGTH_SHORT).show()
+                    }
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFFFFA725),
+                    contentColor = Color.Black
+                ),
+                shape = RoundedCornerShape(50),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color(0xFFB388EB), shape = RoundedCornerShape(50))
-                    .padding(vertical = 16.dp),
-                contentAlignment = Alignment.Center
+                    .padding(vertical = 16.dp)
             ) {
                 Text(
                     text = "SAVE CHANGES",
-                    color = Color.Black,
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp,
-                    modifier = Modifier.clickable {
-                        if (petName.isNotBlank()) {
-                            val updatedPet = petToEdit.copy(
-                                name = petName,
-                                variant = petVariant
-                            )
-
-                            petViewModel.updatePet(updatedPet)
-                            Toast.makeText(context, "${petName}'s details updated!", Toast.LENGTH_SHORT).show()
-                            navController.popBackStack()
-                        } else {
-                            Toast.makeText(context, "Pet name can't be empty!", Toast.LENGTH_SHORT).show()
-                        }
-                    }
+                    fontFamily = ChewyFont
                 )
             }
         }

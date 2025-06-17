@@ -18,13 +18,19 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import com.example.mypetworld.R
+import com.example.mypetworld.ui.theme.ChewyFont
+import com.example.mypetworld.ui.theme.ComicNeueFont
 
 
 @Composable
@@ -64,7 +70,7 @@ fun PetDetailScreen(
 
     LaunchedEffect(pet.id) {
         pet.let {
-            petViewModel.startUpdatingPetStats(
+            petViewModel.startPetStatSimulation(
                 petId = it.id,
                 lightLevelProvider = { currentLightLevel.floatValue }
             )
@@ -86,6 +92,8 @@ fun PetDetailScreen(
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
+            Spacer(modifier = Modifier.height(24.dp))
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -113,7 +121,8 @@ fun PetDetailScreen(
                 text = pet.name,
                 fontSize = 32.sp,
                 color = Color.Black,
-                modifier = Modifier.align(Alignment.CenterHorizontally)
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+                fontFamily = ChewyFont
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -128,10 +137,11 @@ fun PetDetailScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            StatRow("HP", pet.hp)
-            StatRow("Hunger", pet.hunger)
-            StatRow("Happiness", pet.happiness)
-            StatRow("Energy", pet.energy)
+            StatRow("❤️ (HP)", pet.hp)
+            StatRow("🍔 (Hunger)", pet.hunger)
+            StatRow("😄 (Happiness)", pet.happiness)
+            StatRow("⚡ (Energy)", pet.energy)
+
 
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -153,18 +163,52 @@ fun PetDetailScreen(
 }
 
 @Composable
-fun StatRow(label: String, value: Int) {
-    Column(modifier = Modifier.padding(vertical = 8.dp)) {
-        Text(text = "$label: $value", fontSize = 16.sp, color = Color.Black)
-        LinearProgressIndicator(
-            progress = value / 100f,
-            color = Color(0xFF4CC9F0),
+fun StatRow(stat: String, value: Int) {
+    val clampedValue = value.coerceIn(0, 100)
+    val progress = clampedValue / 100f
+
+    Column(modifier = Modifier.padding(vertical = 6.dp)) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = stat,
+                fontSize = 22.sp,
+                fontFamily = ComicNeueFont
+
+            )
+            Text(
+                text = "$clampedValue/100",
+                fontSize = 16.sp,
+                color = Color.DarkGray,
+                fontFamily = ComicNeueFont
+
+            )
+        }
+        Spacer(modifier = Modifier.height(4.dp))
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(8.dp)
-        )
+                .height(12.dp)
+                .clip(RoundedCornerShape(6.dp))
+                .background(Color(0xFFE0E0E0))
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .fillMaxWidth(progress)
+                    .background(
+                        brush = Brush.horizontalGradient(
+                            colors = listOf(Color(0xFF4CC9F0), Color(0xFF3A86FF))
+                        ),
+                        shape = RoundedCornerShape(6.dp)
+                    )
+            )
+        }
     }
 }
+
 
 
 

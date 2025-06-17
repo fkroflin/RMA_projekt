@@ -47,11 +47,15 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Logout
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.layout.ContentScale
 import com.example.mypetworld.R
 import com.example.mypetworld.ViewModel.AuthenticationViewModel
+import com.example.mypetworld.ui.theme.ChewyFont
+import com.example.mypetworld.ui.theme.ComicNeueFont
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 
@@ -111,7 +115,8 @@ fun MainScreen(petViewModel: PetViewModel = viewModel(), navController: NavContr
                 Text(
                     text = userDisplayName,
                     fontWeight = FontWeight.Bold,
-                    color = Color.Black
+                    color = Color.Black,
+                    fontFamily = ComicNeueFont
                 )
             }
 
@@ -136,7 +141,8 @@ fun MainScreen(petViewModel: PetViewModel = viewModel(), navController: NavContr
                             text = "MY PET WORLD",
                             fontSize = 24.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color.Black
+                            color = Color.Black,
+                            fontFamily = ChewyFont
                         )
                     }
                 }
@@ -239,21 +245,24 @@ fun MainScreen(petViewModel: PetViewModel = viewModel(), navController: NavContr
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Box(
+            Button(
+                onClick = { navController.navigate("adopt_pet_screen") },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFFFFA725),
+                    contentColor = Color.Black
+                ),
+                shape = RoundedCornerShape(50),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color(0xFFB388EB), shape = RoundedCornerShape(50))
                     .padding(vertical = 16.dp)
-                    .clickable { navController.navigate("adopt_pet_screen") },
-                contentAlignment = Alignment.Center,
-
-                ) {
+            ) {
                 Text(
                     text = "ADOPT",
-                    color = Color.Black,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = ChewyFont
                 )
             }
+
         }
     }
 }
@@ -263,7 +272,9 @@ fun MainScreen(petViewModel: PetViewModel = viewModel(), navController: NavContr
 fun PetItem(pet: Pet, navController: NavController, viewModel: PetViewModel) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { navController.navigate("pet_detail_screen/${pet.id}") }
     ) {
         Image(
             painter = painterResource(id = viewModel.getPetIconRes(pet.type,pet.variant)),
@@ -273,7 +284,7 @@ fun PetItem(pet: Pet, navController: NavController, viewModel: PetViewModel) {
                 .clip(CircleShape)
                 .background(Color.White)
                 .padding(8.dp)
-                .clickable { navController.navigate("pet_detail_screen/${pet.id}") }
+//                .clickable { navController.navigate("pet_detail_screen/${pet.id}") }
         )
         Spacer(modifier = Modifier.width(16.dp))
         Box(
@@ -286,11 +297,13 @@ fun PetItem(pet: Pet, navController: NavController, viewModel: PetViewModel) {
                 Text(
                     text = "${pet.name} (${pet.type})",
                     fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = ComicNeueFont
                 )
                 Text(
                     text = "HP: ${pet.hp}, Hunger: ${pet.hunger}, Happiness: ${pet.happiness}, Energy: ${pet.energy}",
-                    fontSize = 14.sp
+                    fontSize = 14.sp,
+                    fontFamily = ComicNeueFont
                 )
             }
         }

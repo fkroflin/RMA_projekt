@@ -17,6 +17,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.mypetworld.R
 import com.example.mypetworld.ViewModel.AuthenticationViewModel
+import com.example.mypetworld.ui.theme.ChewyFont
+import com.example.mypetworld.ui.theme.ComicNeueFont
 
 @Composable
 fun LoginScreen(navController: NavController, authViewModel: AuthenticationViewModel = viewModel()) {
@@ -35,7 +37,8 @@ fun LoginScreen(navController: NavController, authViewModel: AuthenticationViewM
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(24.dp),
+                .padding(18.dp)
+                .offset(y = -45.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -44,13 +47,15 @@ fun LoginScreen(navController: NavController, authViewModel: AuthenticationViewM
                 contentDescription = "App Logo",
                 modifier = Modifier
                     .height(280.dp)
-                    .padding(bottom = 16.dp)
             )
 
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it },
-                label = { Text("Email") }
+                label = { Text(
+                    text = "Email",
+                    fontFamily = ComicNeueFont
+                ) }
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -58,7 +63,10 @@ fun LoginScreen(navController: NavController, authViewModel: AuthenticationViewM
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
-                label = { Text("Password") },
+                label = { Text(
+                    text = "Password",
+                    fontFamily = ComicNeueFont
+                ) },
                 visualTransformation = PasswordVisualTransformation()
             )
 
@@ -66,17 +74,33 @@ fun LoginScreen(navController: NavController, authViewModel: AuthenticationViewM
 
             Button(
                 onClick = {
-                    authViewModel.login(email, password) { success, error ->
-                        if (success) {
-                            navController.navigate("main")
-                        } else {
-                            errorMessage = error
+                    when {
+                        email.isBlank() && password.isBlank() -> {
+                            errorMessage = "Please enter both email and password"
+                        }
+                        email.isBlank() -> {
+                            errorMessage = "Please enter an email"
+                        }
+                        password.isBlank() -> {
+                            errorMessage = "Please enter a password"
+                        }
+                        else -> {
+                            authViewModel.login(email, password) { success, error ->
+                                if (success) {
+                                    navController.navigate("main")
+                                } else {
+                                    errorMessage = error
+                                }
+                            }
                         }
                     }
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CC9F0))
             ) {
-                Text("Login")
+                Text(
+                    text = "Login",
+                    fontFamily = ChewyFont
+                )
             }
 
             errorMessage?.let {

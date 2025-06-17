@@ -83,63 +83,59 @@ class PetViewModel : ViewModel() {
         }
     }
 
-    private fun updatePetStatsBasedOnLight(pet: Pet, lightLevel: Float) {
-        var newHp = pet.hp
-        var newHunger = pet.hunger
-        var newHappiness = pet.happiness
-        var newEnergy = pet.energy
-
-        if (lightLevel > 100) {
-            newEnergy = (newEnergy - 5).coerceAtLeast(0)
-            newHunger = (newHunger - 3).coerceAtLeast(0)
-            newHappiness = (newHappiness + 3).coerceAtMost(100)
-            if (newHunger < 30) newHappiness = (newHappiness - 2).coerceAtLeast(0)
-            if (newHunger == 0) {
-                newHappiness = (newHappiness - 4).coerceAtLeast(0)
-                newHp = (newHp - 2).coerceAtLeast(0)
-            }
-            if (newHunger >= 30) {
-                newHp = (newHp + 1).coerceAtMost(100)
-                newHappiness = (newHappiness + 2).coerceAtMost(100)
-            }
-        } else {
-            newEnergy = (newEnergy + 4).coerceAtMost(100)
-            newHunger = (newHunger - 2).coerceAtLeast(0)
-            if (newHunger < 30) newHappiness = (newHappiness - 2).coerceAtLeast(0)
-            if (newHunger == 0) {
-                newHappiness = (newHappiness - 4).coerceAtLeast(0)
-                newHp = (newHp - 2).coerceAtLeast(0)
-            }
-            if (newHunger >= 30) {
-                newHp = (newHp + 1).coerceAtMost(100)
-                newHappiness = (newHappiness + 2).coerceAtMost(100)
-            }
-        }
-
-        val updatedPet = pet.copy(
-            hp = newHp,
-            hunger = newHunger,
-            happiness = newHappiness,
-            energy = newEnergy
-        )
-
-        updatePet(updatedPet)
-    }
-
-
-
-    fun startUpdatingPetStats(petId: String, lightLevelProvider: () -> Float) {
+    fun startPetStatSimulation(petId: String, lightLevelProvider: () -> Float) {
         viewModelScope.launch {
             while (true) {
                 delay(2000)
                 val pet = pets.value.find { it.id == petId }
                 if (pet != null) {
                     val lightLevel = lightLevelProvider()
-                    updatePetStatsBasedOnLight(pet, lightLevel)
+
+                    var newHp = pet.hp
+                    var newHunger = pet.hunger
+                    var newHappiness = pet.happiness
+                    var newEnergy = pet.energy
+
+                    if (lightLevel > 100) {
+                        newEnergy = (newEnergy - 5).coerceAtLeast(0)
+                        newHunger = (newHunger - 3).coerceAtLeast(0)
+                        newHappiness = (newHappiness + 3).coerceAtMost(100)
+                        if (newHunger < 30) newHappiness = (newHappiness - 2).coerceAtLeast(0)
+                        if (newHunger == 0) {
+                            newHappiness = (newHappiness - 4).coerceAtLeast(0)
+                            newHp = (newHp - 2).coerceAtLeast(0)
+                        }
+                        if (newHunger >= 30) {
+                            newHp = (newHp + 1).coerceAtMost(100)
+                            newHappiness = (newHappiness + 2).coerceAtMost(100)
+                        }
+                    } else {
+                        newEnergy = (newEnergy + 4).coerceAtMost(100)
+                        newHunger = (newHunger - 2).coerceAtLeast(0)
+                        if (newHunger < 30) newHappiness = (newHappiness - 2).coerceAtLeast(0)
+                        if (newHunger == 0) {
+                            newHappiness = (newHappiness - 4).coerceAtLeast(0)
+                            newHp = (newHp - 2).coerceAtLeast(0)
+                        }
+                        if (newHunger >= 30) {
+                            newHp = (newHp + 1).coerceAtMost(100)
+                            newHappiness = (newHappiness + 2).coerceAtMost(100)
+                        }
+                    }
+
+                    val updatedPet = pet.copy(
+                        hp = newHp,
+                        hunger = newHunger,
+                        happiness = newHappiness,
+                        energy = newEnergy
+                    )
+
+                    updatePet(updatedPet)
                 }
             }
         }
     }
+
 
     fun getPetIconRes(type: String, variant: Int): Int {
         return when (type.lowercase()) {

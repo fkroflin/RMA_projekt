@@ -48,13 +48,14 @@ import com.example.mypetworld.Model.Pet
 import com.example.mypetworld.Model.PetType
 import com.example.mypetworld.R
 import com.example.mypetworld.ViewModel.PetViewModel
+import com.example.mypetworld.ui.theme.ChewyFont
+import com.example.mypetworld.ui.theme.ComicNeueFont
 import com.google.firebase.auth.FirebaseAuth
 
 @Composable
 fun AdoptPetScreen(
     navController: NavController,
-    petViewModel: PetViewModel = viewModel(),
-    onAdoptClick: (Pet) -> Unit
+    petViewModel: PetViewModel = viewModel()
 ) {
     var petName by remember { mutableStateOf("") }
     var selectedPetType by remember { mutableStateOf(PetType.dog) }
@@ -105,7 +106,8 @@ fun AdoptPetScreen(
                         text = "ADOPT A PET",
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color.Black
+                        color = Color.Black,
+                        fontFamily = ChewyFont
                     )
                 }
             }
@@ -160,7 +162,8 @@ fun AdoptPetScreen(
                     Text(
                         text = "Pet Type",
                         fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
+                        fontFamily = ComicNeueFont
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Box {
@@ -171,7 +174,8 @@ fun AdoptPetScreen(
                                 .background(Color(0xFFBDE0FE), shape = RoundedCornerShape(8.dp))
                                 .padding(12.dp),
                             fontSize = 16.sp,
-                            color = Color.Black
+                            color = Color.Black,
+                            fontFamily = ComicNeueFont
                         )
                         DropdownMenu(
                             expanded = expanded,
@@ -213,13 +217,15 @@ fun AdoptPetScreen(
                     Text(
                         text = "About ${selectedPetType.displayName}s",
                         fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
+                        fontFamily = ComicNeueFont
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
                         text = selectedPetType.description,
                         fontSize = 14.sp,
-                        color = Color.Black
+                        color = Color.Black,
+                        fontFamily = ComicNeueFont
                     )
                 }
             }
@@ -236,13 +242,15 @@ fun AdoptPetScreen(
                     Text(
                         text = "Default Stats",
                         fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
+                        fontFamily = ComicNeueFont
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
                         text = "HP: 100, Hunger: 100, Happiness: 100, Energy: 100",
                         fontSize = 14.sp,
-                        color = Color.Black
+                        color = Color.Black,
+                        fontFamily = ComicNeueFont
                     )
                 }
             }
@@ -267,23 +275,26 @@ fun AdoptPetScreen(
                             Toast.makeText(context, "You've adopted $petName!", Toast.LENGTH_SHORT).show()
                             petName = ""
                             selectedPetType = PetType.dog
+                            navController.popBackStack()
                         }
+                    } else {
+                        Toast.makeText(context, "Please enter a name for your pet.", Toast.LENGTH_SHORT).show()
                     }
-                    navController.popBackStack()
                 },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),
                 shape = RoundedCornerShape(50),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFFB388EB),
+                    containerColor = Color(0xFFFFA725),
                     contentColor = Color.Black
                 )
             ) {
                 Text(
                     text = "ADOPT NOW",
                     fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp
+                    fontSize = 16.sp,
+                    fontFamily = ChewyFont
                 )
             }
         }

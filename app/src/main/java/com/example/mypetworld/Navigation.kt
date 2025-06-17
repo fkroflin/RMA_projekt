@@ -28,10 +28,7 @@ fun Navigation(navController: NavHostController) {
 
         composable("adopt_pet_screen") {
             AdoptPetScreen(
-                navController = navController,
-                onAdoptClick = { pet ->
-                    navController.popBackStack()
-                }
+                navController = navController
             )
         }
 

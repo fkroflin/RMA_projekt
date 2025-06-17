@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -31,6 +32,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import com.example.mypetworld.R
+import com.example.mypetworld.ui.theme.ChewyFont
+import com.example.mypetworld.ui.theme.ComicNeueFont
 
 @Composable
 fun RegisterScreen(navController: NavController, authViewModel: AuthenticationViewModel = viewModel()) {
@@ -50,7 +53,8 @@ fun RegisterScreen(navController: NavController, authViewModel: AuthenticationVi
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(24.dp),
+                .padding(18.dp)
+                .offset(y = -50.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -59,13 +63,15 @@ fun RegisterScreen(navController: NavController, authViewModel: AuthenticationVi
                 contentDescription = "App Logo",
                 modifier = Modifier
                     .height(280.dp)
-                    .padding(bottom = 16.dp)
             )
 
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it },
-                label = { Text("Email") }
+                label = { Text(
+                    text = "Email",
+                    fontFamily = ComicNeueFont
+                ) }
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -73,7 +79,10 @@ fun RegisterScreen(navController: NavController, authViewModel: AuthenticationVi
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
-                label = { Text("Password") },
+                label = { Text(
+                    text = "Password",
+                    fontFamily = ComicNeueFont
+                ) },
                 visualTransformation = PasswordVisualTransformation()
             )
 
@@ -82,7 +91,10 @@ fun RegisterScreen(navController: NavController, authViewModel: AuthenticationVi
             OutlinedTextField(
                 value = confirmPassword,
                 onValueChange = { confirmPassword = it },
-                label = { Text("Confirm Password") },
+                label = { Text(
+                    text = "Confirm Password",
+                    fontFamily = ComicNeueFont
+                ) },
                 visualTransformation = PasswordVisualTransformation()
             )
 
@@ -90,22 +102,39 @@ fun RegisterScreen(navController: NavController, authViewModel: AuthenticationVi
 
             Button(
                 onClick = {
-                    if (password != confirmPassword) {
-                        errorMessage = "Passwords do not match"
-                    }
-                    else{
-                        authViewModel.register(email, password) { success, error ->
-                            if (success) {
-                                navController.navigate("main")
-                            } else {
-                                errorMessage = error
+                    when {
+                        email.isBlank() && password.isBlank() && confirmPassword.isBlank() -> {
+                            errorMessage = "Please enter email, password, and confirm password"
+                        }
+                        email.isBlank() -> {
+                            errorMessage = "Please enter an email"
+                        }
+                        password.isBlank() -> {
+                            errorMessage = "Please enter a password"
+                        }
+                        confirmPassword.isBlank() -> {
+                            errorMessage = "Please confirm your password"
+                        }
+                        password != confirmPassword -> {
+                            errorMessage = "Passwords do not match"
+                        }
+                        else -> {
+                            authViewModel.register(email, password) { success, error ->
+                                if (success) {
+                                    navController.navigate("main")
+                                } else {
+                                    errorMessage = error
+                                }
                             }
                         }
                     }
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CC9F0))
             ) {
-                Text("Create Account")
+                Text(
+                    text = "Create Account",
+                    fontFamily = ChewyFont
+                )
             }
 
             errorMessage?.let {
@@ -118,7 +147,8 @@ fun RegisterScreen(navController: NavController, authViewModel: AuthenticationVi
             Text(
                 "Already have an account? Login",
                 color = Color(0xFF4CC9F0),
-                modifier = Modifier.clickable { navController.navigate("login") }
+                modifier = Modifier.clickable { navController.navigate("login") },
+                fontFamily = ComicNeueFont
             )
         }
     }
