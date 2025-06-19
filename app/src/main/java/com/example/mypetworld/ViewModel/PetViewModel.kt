@@ -172,4 +172,19 @@ class PetViewModel : ViewModel() {
             else -> R.drawable.default_icon
         }
     }
+
+    fun releasePet(petId: String, onSuccess: () -> Unit = {}, onFailure: (Exception) -> Unit = {}) {
+        viewModelScope.launch {
+            try {
+                db.collection("Pets").document(petId)
+                    .delete()
+                    .await()
+                Log.d("PetViewModel", "Pet released with ID: $petId")
+                onSuccess()
+            } catch (e: Exception) {
+                Log.e("PetViewModel", "Failed to release pet", e)
+                onFailure(e)
+            }
+        }
+    }
 }

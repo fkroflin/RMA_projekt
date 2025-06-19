@@ -8,8 +8,6 @@ data class Pet (
     var energy: Int = 100,
     val type: String = "",
     val name: String = "",
-    val toy: String = "",
-    var lastUpdated: Long = System.currentTimeMillis(),
     var variant: Int = 1,
     var userId: String = ""
 )

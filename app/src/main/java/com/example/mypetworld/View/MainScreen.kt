@@ -46,9 +46,11 @@ import com.example.mypetworld.ViewModel.PetViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.layout.ContentScale
@@ -270,23 +272,27 @@ fun MainScreen(petViewModel: PetViewModel = viewModel(), navController: NavContr
 
 @Composable
 fun PetItem(pet: Pet, navController: NavController, viewModel: PetViewModel) {
+    var showDialog by remember { mutableStateOf(false) }
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
+            .padding(vertical = 4.dp)
             .clickable { navController.navigate("pet_detail_screen/${pet.id}") }
     ) {
         Image(
-            painter = painterResource(id = viewModel.getPetIconRes(pet.type,pet.variant)),
+            painter = painterResource(id = viewModel.getPetIconRes(pet.type, pet.variant)),
             contentDescription = "${pet.name} icon",
             modifier = Modifier
                 .size(64.dp)
                 .clip(CircleShape)
                 .background(Color.White)
                 .padding(8.dp)
-//                .clickable { navController.navigate("pet_detail_screen/${pet.id}") }
         )
+
         Spacer(modifier = Modifier.width(16.dp))
+
         Box(
             modifier = Modifier
                 .background(Color.White, shape = RoundedCornerShape(16.dp))
@@ -301,14 +307,45 @@ fun PetItem(pet: Pet, navController: NavController, viewModel: PetViewModel) {
                     fontFamily = ComicNeueFont
                 )
                 Text(
-                    text = "HP: ${pet.hp}, Hunger: ${pet.hunger}, Happiness: ${pet.happiness}, Energy: ${pet.energy}",
+                    text = "HP: ${pet.hp}   Hunger: ${pet.hunger}   Happiness: ${pet.happiness}    Energy: ${pet.energy}",
                     fontSize = 14.sp,
                     fontFamily = ComicNeueFont
                 )
             }
         }
+
+        IconButton(onClick = { showDialog = true }) {
+            Icon(
+                imageVector = Icons.Default.Close,
+                contentDescription = "Delete Pet"
+            )
+        }
+    }
+
+    if (showDialog) {
+        androidx.compose.material3.AlertDialog(
+            onDismissRequest = { showDialog = false },
+            title = { Text("Release Pet") },
+            text = { Text("Are you sure you want to release ${pet.name}?") },
+            confirmButton = {
+                androidx.compose.material3.TextButton(onClick = {
+                    viewModel.releasePet(pet.id)
+                    showDialog = false
+                }) {
+                    Text("Yes")
+                }
+            },
+            dismissButton = {
+                androidx.compose.material3.TextButton(onClick = {
+                    showDialog = false
+                }) {
+                    Text("Cancel")
+                }
+            }
+        )
     }
 }
+
 
 
 
